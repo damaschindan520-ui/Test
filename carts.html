@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="C:/Users/danud/OneDrive/Рабочий стол/code/css/styles.css" />
+  <title>Cart - Ecommerce Website</title>
+
+  <style>
+    /*=============== CART PAGE ===============*/
+    .cart__section {
+      padding-block: 3rem 5rem;
+    }
+
+    /* ---- Empty cart ---- */
+    .cart__empty {
+      text-align: center;
+      padding-block: 5rem;
+      display: none;
+    }
+
+    .cart__empty.show-empty {
+      display: block;
+    }
+
+    .cart__empty-icon {
+      font-size: 4rem;
+      color: var(--border-color-alt);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .cart__empty-title {
+      font-size: var(--h4-font-size);
+      margin-bottom: 0.75rem;
+    }
+
+    .cart__empty-text {
+      color: var(--text-color-light);
+      font-size: var(--small-font-size);
+      margin-bottom: 2rem;
+    }
+
+    /* ---- Cart layout ---- */
+    .cart__wrapper {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .cart__wrapper.show-empty {
+      display: none;
+    }
+
+    /* ---- Cart Table ---- */
+    .cart__table-wrapper {
+      border: 1px solid var(--border-color-alt);
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+
+    .cart__table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cart__table thead {
+      background-color: var(--first-color-alt);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .cart__table th {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      font-family: var(--second-font);
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-700);
+      color: var(--title-color);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .cart__table th:last-child,
+    .cart__table td:last-child {
+      text-align: right;
+    }
+
+    .cart__table td {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border-color-alt);
+      vertical-align: middle;
+      font-size: var(--small-font-size);
+      color: var(--text-color);
+    }
+
+    .cart__table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .cart__table tbody tr {
+      transition: background-color 0.2s;
+    }
+
+    .cart__table tbody tr:hover {
+      background-color: hsla(129, 44%, 94%, 0.4);
+    }
+
+    /* Product cell */
+    .cart__product-cell {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      min-width: 220px;
+    }
+
+    .cart__product-img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 0.625rem;
+      border: 1px solid var(--border-color-alt);
+      flex-shrink: 0;
+    }
+
+    .cart__product-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .cart__product-name {
+      font-family: var(--second-font);
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-600);
+      color: var(--title-color);
+      line-height: 1.4;
+    }
+
+    .cart__product-category {
+      font-size: var(--tiny-font-size);
+      color: var(--text-color-light);
+    }
+
+    /* Price cell */
+    .cart__price {
+      color: var(--first-color);
+      font-weight: var(--weight-600);
+      font-size: var(--normal-font-size);
+      white-space: nowrap;
+    }
+
+    /* Quantity cell */
+    .cart__qty {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .qty__btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border-color-alt);
+      border-radius: 0.25rem;
+      background: var(--body-color);
+      color: var(--title-color);
+      font-size: var(--normal-font-size);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-weight: var(--weight-600);
+      line-height: 1;
+    }
+
+    .qty__btn:hover {
+      background-color: var(--first-color);
+      border-color: var(--first-color);
+      color: var(--body-color);
+    }
+
+    .qty__input {
+      width: 44px;
+      height: 32px;
+      text-align: center;
+      border: 1px solid var(--border-color-alt);
+      border-radius: 0.25rem;
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-600);
+      color: var(--title-color);
+      background: var(--body-color);
+    }
+
+    .qty__input:focus {
+      border-color: var(--first-color);
+      outline: none;
+    }
+
+    /* Subtotal cell */
+    .cart__subtotal {
+      color: var(--title-color);
+      font-family: var(--second-font);
+      font-weight: var(--weight-700);
+      font-size: var(--normal-font-size);
+      white-space: nowrap;
+    }
+
+    /* Remove btn */
+    .cart__remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-color-light);
+      font-size: var(--large-font-size);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      margin-left: auto;
+    }
+
+    .cart__remove:hover {
+      background-color: hsl(0, 80%, 95%);
+      color: hsl(0, 80%, 60%);
+    }
+
+    /* Cart actions row */
+    .cart__actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem;
+      background-color: var(--first-color-alt);
+      border-top: 1px solid var(--border-color);
+      border-radius: 0 0 1rem 1rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .cart__continue {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-600);
+      color: var(--text-color);
+      font-family: var(--second-font);
+      transition: color 0.2s;
+    }
+
+    .cart__continue:hover {
+      color: var(--first-color);
+    }
+
+    .cart__clear-btn {
+      background: none;
+      border: 1px solid var(--border-color-alt);
+      border-radius: 0.25rem;
+      padding: 0.5rem 1rem;
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-600);
+      font-family: var(--second-font);
+      color: var(--text-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cart__clear-btn:hover {
+      border-color: hsl(0, 80%, 60%);
+      color: hsl(0, 80%, 60%);
+      background-color: hsl(0, 80%, 97%);
+    }
+
+    /* ---- Right column ---- */
+    .cart__right {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Card shared style */
+    .cart__card {
+      border: 1px solid var(--border-color-alt);
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+
+    .cart__card-header {
+      background-color: var(--first-color-alt);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 1.5rem;
+    }
+
+    .cart__card-title {
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-700);
+      color: var(--title-color);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-family: var(--second-font);
+    }
+
+    .cart__card-body {
+      padding: 1.5rem;
+    }
+
+    /* ---- Coupon ---- */
+    .coupon__form {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .coupon__input {
+      flex: 1;
+      height: 44px;
+      border: 1px solid var(--border-color-alt);
+      border-radius: 0.375rem;
+      padding-inline: 1rem;
+      font-size: var(--small-font-size);
+      color: var(--title-color);
+      background: var(--body-color);
+      transition: border-color 0.2s;
+    }
+
+    .coupon__input:focus {
+      border-color: var(--first-color);
+      outline: none;
+      box-shadow: 0 0 0 3px hsla(176, 88%, 27%, 0.1);
+    }
+
+    .coupon__btn {
+      height: 44px;
+      padding-inline: 1.25rem;
+      background-color: var(--first-color);
+      border: 2px solid var(--first-color);
+      color: var(--body-color);
+      border-radius: 0.375rem;
+      font-family: var(--second-font);
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-700);
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .coupon__btn:hover {
+      background-color: transparent;
+      color: var(--first-color);
+    }
+
+    .coupon__msg {
+      display: block;
+      font-size: var(--tiny-font-size);
+      margin-top: 0.5rem;
+      min-height: 1rem;
+      font-weight: var(--weight-600);
+    }
+
+    .coupon__msg.success {
+      color: var(--first-color);
+    }
+
+    .coupon__msg.error {
+      color: hsl(0, 80%, 60%);
+    }
+
+    /* ---- Shipping Estimator ---- */
+    .shipping__form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .shipping__select,
+    .shipping__input {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--border-color-alt);
+      border-radius: 0.375rem;
+      padding-inline: 1rem;
+      font-size: var(--small-font-size);
+      color: var(--title-color);
+      background: var(--body-color);
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .shipping__select:focus,
+    .shipping__input:focus {
+      border-color: var(--first-color);
+      outline: none;
+      box-shadow: 0 0 0 3px hsla(176, 88%, 27%, 0.1);
+    }
+
+    .shipping__btn {
+      width: 100%;
+      height: 44px;
+      background-color: var(--first-color);
+      border: 2px solid var(--first-color);
+      color: var(--body-color);
+      border-radius: 0.375rem;
+      font-family: var(--second-font);
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-700);
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 0.25rem;
+    }
+
+    .shipping__btn:hover {
+      background-color: transparent;
+      color: var(--first-color);
+    }
+
+    .shipping__result {
+      display: none;
+      margin-top: 0.75rem;
+      padding: 0.875rem 1rem;
+      background-color: var(--first-color-alt);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      font-size: var(--small-font-size);
+    }
+
+    .shipping__result.show-result {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .shipping__result-label {
+      color: var(--text-color);
+    }
+
+    .shipping__result-price {
+      font-weight: var(--weight-700);
+      color: var(--first-color);
+      font-family: var(--second-font);
+    }
+
+    /* ---- Order Summary ---- */
+    .summary__rows {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .summary__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--small-font-size);
+    }
+
+    .summary__label {
+      color: var(--text-color);
+    }
+
+    .summary__value {
+      font-weight: var(--weight-600);
+      color: var(--title-color);
+      font-family: var(--second-font);
+    }
+
+    .summary__value.discount {
+      color: hsl(352, 100%, 50%);
+    }
+
+    .summary__value.free {
+      color: var(--first-color);
+    }
+
+    .summary__divider {
+      height: 1px;
+      background-color: var(--border-color-alt);
+      margin-block: 0.25rem;
+    }
+
+    .summary__total-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.875rem;
+      border-top: 2px solid var(--border-color-alt);
+      margin-bottom: 1.5rem;
+    }
+
+    .summary__total-label {
+      font-family: var(--second-font);
+      font-weight: var(--weight-700);
+      font-size: var(--normal-font-size);
+      color: var(--title-color);
+    }
+
+    .summary__total-price {
+      font-family: var(--second-font);
+      font-weight: var(--weight-700);
+      font-size: var(--h4-font-size);
+      color: var(--first-color);
+    }
+
+    .checkout__btn {
+      width: 100%;
+      text-align: center;
+      display: block;
+      cursor: pointer;
+      border: none;
+    }
+
+    .summary__secure {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      margin-top: 0.875rem;
+      font-size: var(--tiny-font-size);
+      color: var(--text-color-light);
+    }
+
+    /* ---- Toast ---- */
+    .cart__toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background-color: var(--first-color);
+      color: var(--body-color);
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-600);
+      box-shadow: 0 4px 20px hsla(176, 88%, 27%, 0.35);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 9999;
+    }
+
+    .cart__toast.show-toast {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .cart__toast.toast-error {
+      background-color: hsl(0, 80%, 60%);
+      box-shadow: 0 4px 20px hsla(0, 80%, 60%, 0.35);
+    }
+
+    /* ---- Responsive ---- */
+    @media screen and (max-width: 1024px) {
+      .cart__wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .cart__right {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .cart__card:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .cart__right {
+        grid-template-columns: 1fr;
+      }
+
+      .cart__card:last-child {
+        grid-column: unset;
+      }
+
+      .cart__table th:nth-child(2),
+      .cart__table td:nth-child(2) {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 576px) {
+      .cart__product-cell {
+        min-width: unset;
+      }
+
+      .cart__product-img {
+        width: 56px;
+        height: 56px;
+      }
+
+      .cart__table th:nth-child(4),
+      .cart__table td:nth-child(4) {
+        display: none;
+      }
+    }
+
+    /* ---- Centered nav ---- */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      column-gap: 1rem;
+      height: var(--header-height, 64px);
+      padding-block: 0.5rem;
+    }
+
+    .nav__menu {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav__list {
+      display: flex;
+      align-items: center;
+      column-gap: 2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ---- Size select ---- */
+    .size__select {
+      height: 34px;
+      border: 1px solid var(--border-color-alt);
+      border-radius: 0.375rem;
+      padding-inline: 0.625rem;
+      font-size: var(--small-font-size);
+      font-weight: var(--weight-600);
+      color: var(--title-color);
+      background: var(--body-color);
+      cursor: pointer;
+      transition: border-color 0.2s;
+      min-width: 70px;
+    }
+
+    .size__select:focus {
+      border-color: var(--first-color);
+      outline: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!--=============== HEADER ===============-->
+  <header class="header">
+    <div class="header__top">
+      <div class="header__container container">
+        <div class="header__contact">
+          <span>(+373) - 6874 - 6543</span>
+          <span>Our location</span>
+        </div>
+        <p class="header__alert-news">Super Value Deals - Save more with coupons</p>
+        <a href="login-register.html" class="header__top-action">Log In / Sign Up</a>
+      </div>
+    </div>
+
+    <nav class="nav container">
+      <a href="index.html" class="nav__logo">
+        <img src="C:/Users/danud/OneDrive/Рабочий стол/code/img/logo.svg" alt="" class="nav__logo-img">
+      </a>
+      <div class="nav__menu" id="nav-menu">
+        <ul class="nav__list">
+          <li class="nav__item"><a href="index.html" class="nav__link">Home</a></li>
+          <li class="nav__item"><a href="shop.html" class="nav__link">Shop</a></li>
+          <li class="nav__item"><a href="wishlist.html" class="nav__link">Wishlist</a></li>
+          <li class="nav__item"><a href="carts.html" class="nav__link active-link">Carts</a></li>
+          <li class="nav__item"><a href="login-register.html" class="nav__link">Login</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!--=============== MAIN ===============-->
+  <main class="main">
+    <section class="cart__section section container">
+
+      <!-- Page title -->
+      <h2 class="section__title">Shopping Cart</h2>
+
+      <!-- Empty cart message -->
+      <div class="cart__empty" id="cart-empty">
+        <i class="fi fi-rr-shopping-cart-check cart__empty-icon"></i>
+        <h3 class="cart__empty-title">Your cart is empty</h3>
+        <p class="cart__empty-text">Looks like you haven't added anything yet.</p>
+        <a href="shop.html" class="btn">Start Shopping</a>
+      </div>
+
+      <!-- Cart wrapper (hidden when empty) -->
+      <div class="cart__wrapper" id="cart-wrapper">
+
+        <!-- ===== LEFT: Product Table ===== -->
+        <div class="cart__left">
+          <div class="cart__table-wrapper">
+            <table class="cart__table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Size</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="cart-tbody">
+                <!-- rows injected by JS -->
+              </tbody>
+            </table>
+            <div class="cart__actions">
+              <a href="shop.html" class="cart__continue">
+                <i class="fi fi-rr-arrow-left"></i>
+                Continue Shopping
+              </a>
+              <button class="cart__clear-btn" id="clear-cart-btn" type="button">
+                <i class="fi fi-rr-trash"></i>
+                Clear Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== RIGHT: Coupon + Shipping + Summary ===== -->
+        <div class="cart__right">
+
+          <!-- Coupon -->
+          <div class="cart__card">
+            <div class="cart__card-header">
+              <h4 class="cart__card-title">Coupon Code</h4>
+            </div>
+            <div class="cart__card-body">
+              <div class="coupon__form">
+                <input type="text" class="coupon__input" id="coupon-input" placeholder="Enter coupon code">
+                <button class="coupon__btn" id="coupon-btn" type="button">Apply</button>
+              </div>
+              <span class="coupon__msg" id="coupon-msg"></span>
+            </div>
+          </div>
+
+          <!-- Shipping Estimator -->
+          <div class="cart__card">
+            <div class="cart__card-header">
+              <h4 class="cart__card-title">Estimate Shipping</h4>
+            </div>
+            <div class="cart__card-body">
+              <div class="shipping__form">
+                <select class="shipping__select" id="shipping-country">
+                  <option value="">Select Country</option>
+                  <option value="MD">Moldova</option>
+                  <option value="RO">Romania</option>
+                  <option value="DE">Germany</option>
+                  <option value="FR">France</option>
+                  <option value="GB">United Kingdom</option>
+                  <option value="US">United States</option>
+                  <option value="IT">Italy</option>
+                  <option value="ES">Spain</option>
+                </select>
+                <select class="shipping__select" id="shipping-method">
+                  <option value="">Select Shipping Method</option>
+                  <option value="standard" data-price="5.99">Standard (5-7 days) — $5.99</option>
+                  <option value="express" data-price="12.99">Express (2-3 days) — $12.99</option>
+                  <option value="overnight" data-price="24.99">Overnight (1 day) — $24.99</option>
+                  <option value="free" data-price="0">Free Shipping (7-14 days) — FREE</option>
+                </select>
+                <input type="text" class="shipping__input" id="shipping-zip" placeholder="Zip / Postal Code">
+                <button class="shipping__btn" id="shipping-btn" type="button">Calculate Shipping</button>
+              </div>
+              <div class="shipping__result" id="shipping-result">
+                <span class="shipping__result-label" id="shipping-result-label">Standard Shipping</span>
+                <span class="shipping__result-price" id="shipping-result-price">$5.99</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="cart__card">
+            <div class="cart__card-header">
+              <h4 class="cart__card-title">Order Summary</h4>
+            </div>
+            <div class="cart__card-body">
+              <div class="summary__rows">
+                <div class="summary__row">
+                  <span class="summary__label">Subtotal (<span id="summary-item-count">0</span> items)</span>
+                  <span class="summary__value" id="summary-subtotal">$0.00</span>
+                </div>
+                <div class="summary__row" id="discount-row" style="display:none;">
+                  <span class="summary__label">Discount</span>
+                  <span class="summary__value discount" id="summary-discount">-$0.00</span>
+                </div>
+                <div class="summary__row">
+                  <span class="summary__label">Shipping</span>
+                  <span class="summary__value" id="summary-shipping">—</span>
+                </div>
+                <div class="summary__row">
+                  <span class="summary__label">Tax (10%)</span>
+                  <span class="summary__value" id="summary-tax">$0.00</span>
+                </div>
+              </div>
+              <div class="summary__total-row">
+                <span class="summary__total-label">Total</span>
+                <span class="summary__total-price" id="summary-total">$0.00</span>
+              </div>
+              <button class="btn checkout__btn" id="checkout-btn" type="button">Proceed to Checkout</button>
+              <div class="summary__secure">
+                <i class="fi fi-rr-lock"></i>
+                <span>Secure & Encrypted Checkout</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!--=============== FOOTER ===============-->
+  <footer class="footer"></footer>
+
+  <!-- Toast -->
+  <div class="cart__toast" id="cart-toast">
+    <i class="fi fi-rr-check-circle"></i>
+    <span id="toast-msg">Done!</span>
+  </div>
+
+  <!--=============== SWIPER JS ===============-->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+
+  <!--=============== CART JS ===============-->
+  <script>
+    /*============================================================
+      CART SYSTEM — localStorage based
+      
+      Data structure in localStorage key "cart":
+      [
+        {
+          id: "product-1",
+          name: "Colorful Pattern Shirts",
+          category: "Clothing",
+          price: 238.85,
+          image: "img/product-1-1.jpg",
+          qty: 2
+        },
+        ...
+      ]
+      
+      How to add products from other pages:
+      Call addToCart({ id, name, category, price, image }) from any page.
+      Example (in main.js or on the product page):
+      
+        document.querySelectorAll('.cart__btn, .action__btn[aria-label="Carts"]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const item = btn.closest('.product__item');
+            addToCart({
+              id: item.querySelector('.product__title').textContent.trim().replace(/\s+/g, '-').toLowerCase(),
+              name: item.querySelector('.product__title').textContent.trim(),
+              category: item.querySelector('.product__category').textContent.trim(),
+              price: parseFloat(item.querySelector('.new__price').textContent.replace('$', '')),
+              image: item.querySelector('.product__img.default').src
+            });
+          });
+        });
+    ============================================================*/
+
+    /* ---- Helpers ---- */
+    const CART_KEY = 'cart';
+
+    function getCart() {
+      try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartCount();
+    }
+
+    function updateCartCount() {
+      const cart = getCart();
+      const total = cart.reduce((sum, i) => sum + i.qty, 0);
+      document.querySelectorAll('#cart-count').forEach(el => el.textContent = total);
+    }
+
+    /* ---- Global addToCart (usable from other pages) ---- */
+    window.addToCart = function (product) {
+      const cart = getCart();
+      const existing = cart.find(i => i.id === product.id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      saveCart(cart);
+      showToast('Product added to cart!');
+    };
+
+    /* ---- Toast ---- */
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('cart-toast');
+      const msgEl = document.getElementById('toast-msg');
+      if (!toast) return;
+      msgEl.textContent = msg;
+      toast.classList.toggle('toast-error', isError);
+      toast.classList.add('show-toast');
+      setTimeout(() => toast.classList.remove('show-toast'), 3000);
+    }
+
+    /* ---- Coupons ---- */
+    const COUPONS = {
+      'SAVE10': { type: 'percent', value: 10, label: '10% off applied!' },
+      'SAVE20': { type: 'percent', value: 20, label: '20% off applied!' },
+      'FLAT15': { type: 'fixed', value: 15, label: '$15 discount applied!' },
+      'NEWUSER': { type: 'percent', value: 15, label: '15% off for new users!' },
+    };
+    let appliedCoupon = null;
+    let shippingCost = null;
+
+    /* ---- Render cart ---- */
+    function renderCart() {
+      const cart = getCart();
+      const tbody = document.getElementById('cart-tbody');
+      const wrapper = document.getElementById('cart-wrapper');
+      const empty = document.getElementById('cart-empty');
+
+      if (cart.length === 0) {
+        wrapper.classList.add('show-empty');
+        wrapper.style.display = 'none';
+        empty.classList.add('show-empty');
+        updateSummary(cart);
+        return;
+      }
+
+      wrapper.style.display = '';
+      wrapper.classList.remove('show-empty');
+      empty.classList.remove('show-empty');
+
+      tbody.innerHTML = cart.map(item => {
+        const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+        const selectedSize = item.size || '';
+        const sizeOptions = `<option value="">—</option>` +
+          sizes.map(s => `<option value="${s}" ${selectedSize === s ? 'selected' : ''}>${s}</option>`).join('');
+        return `
+          <tr data-id="${item.id}">
+            <td>
+              <div class="cart__product-cell">
+                <img src="${item.image}" alt="${item.name}" class="cart__product-img" onerror="this.style.background='var(--container-color)';this.src=''">
+                <div class="cart__product-info">
+                  <span class="cart__product-name">${item.name}</span>
+                  <span class="cart__product-category">${item.category}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <select class="size__select size-select" data-id="${item.id}">${sizeOptions}</select>
+            </td>
+            <td><span class="cart__price">$${item.price.toFixed(2)}</span></td>
+            <td>
+              <div class="cart__qty">
+                <button class="qty__btn qty-minus" type="button" data-id="${item.id}">−</button>
+                <input type="number" class="qty__input" value="${item.qty}" min="1" max="99" data-id="${item.id}">
+                <button class="qty__btn qty-plus" type="button" data-id="${item.id}">+</button>
+              </div>
+            </td>
+            <td><span class="cart__subtotal">$${(item.price * item.qty).toFixed(2)}</span></td>
+            <td>
+              <button class="cart__remove remove-item" type="button" data-id="${item.id}" aria-label="Remove">
+                <i class="fi fi-rr-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      attachRowEvents();
+      updateSummary(cart);
+      updateCartCount();
+    }
+
+    /* ---- Row events ---- */
+    function attachRowEvents() {
+      /* Minus */
+      document.querySelectorAll('.qty-minus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const cart = getCart();
+          const item = cart.find(i => i.id === id);
+          if (!item) return;
+          if (item.qty > 1) { item.qty -= 1; saveCart(cart); renderCart(); }
+          else { removeItem(id); }
+        });
+      });
+
+      /* Plus */
+      document.querySelectorAll('.qty-plus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const cart = getCart();
+          const item = cart.find(i => i.id === id);
+          if (!item) return;
+          if (item.qty < 99) { item.qty += 1; saveCart(cart); renderCart(); }
+        });
+      });
+
+      /* Manual input */
+      document.querySelectorAll('.qty__input').forEach(input => {
+        input.addEventListener('change', () => {
+          const id = input.dataset.id;
+          let val = parseInt(input.value);
+          if (isNaN(val) || val < 1) val = 1;
+          if (val > 99) val = 99;
+          const cart = getCart();
+          const item = cart.find(i => i.id === id);
+          if (!item) return;
+          item.qty = val;
+          saveCart(cart);
+          renderCart();
+        });
+      });
+
+      /* Remove */
+      document.querySelectorAll('.remove-item').forEach(btn => {
+        btn.addEventListener('click', () => removeItem(btn.dataset.id));
+      });
+
+      /* Size */
+      document.querySelectorAll('.size-select').forEach(sel => {
+        sel.addEventListener('change', () => {
+          const id = sel.dataset.id;
+          const cart = getCart();
+          const item = cart.find(i => i.id === id);
+          if (!item) return;
+          item.size = sel.value;
+          saveCart(cart);
+        });
+      });
+    }
+
+    function removeItem(id) {
+      let cart = getCart();
+      cart = cart.filter(i => i.id !== id);
+      saveCart(cart);
+      renderCart();
+      showToast('Item removed from cart.');
+    }
+
+    /* ---- Clear cart ---- */
+    document.getElementById('clear-cart-btn').addEventListener('click', () => {
+      if (!confirm('Are you sure you want to clear your cart?')) return;
+      saveCart([]);
+      appliedCoupon = null;
+      shippingCost = null;
+      document.getElementById('coupon-input').value = '';
+      document.getElementById('coupon-msg').textContent = '';
+      document.getElementById('shipping-result').classList.remove('show-result');
+      renderCart();
+      showToast('Cart cleared.');
+    });
+
+    /* ---- Update summary ---- */
+    function updateSummary(cart) {
+      const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+      const itemCount = cart.reduce((sum, i) => sum + i.qty, 0);
+      const tax = subtotal * 0.1;
+
+      let discount = 0;
+      if (appliedCoupon) {
+        if (appliedCoupon.type === 'percent') discount = subtotal * appliedCoupon.value / 100;
+        else discount = Math.min(appliedCoupon.value, subtotal);
+      }
+
+      const discountRow = document.getElementById('discount-row');
+      if (discount > 0) {
+        discountRow.style.display = '';
+        document.getElementById('summary-discount').textContent = `-$${discount.toFixed(2)}`;
+      } else {
+        discountRow.style.display = 'none';
+      }
+
+      const shippingEl = document.getElementById('summary-shipping');
+      const shippingDisplay = shippingCost === null ? '—' : (shippingCost === 0 ? '<span class="free">Free</span>' : `$${shippingCost.toFixed(2)}`);
+      shippingEl.innerHTML = shippingDisplay;
+
+      const shipping = shippingCost === null ? 0 : shippingCost;
+      const total = subtotal - discount + shipping + tax;
+
+      document.getElementById('summary-item-count').textContent = itemCount;
+      document.getElementById('summary-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+      document.getElementById('summary-tax').textContent = `$${tax.toFixed(2)}`;
+      document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
+      document.getElementById('cart-count').textContent = itemCount;
+    }
+
+    /* ---- Coupon ---- */
+    document.getElementById('coupon-btn').addEventListener('click', () => {
+      const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+      const msgEl = document.getElementById('coupon-msg');
+      if (!code) {
+        msgEl.textContent = 'Please enter a coupon code.';
+        msgEl.className = 'coupon__msg error';
+        return;
+      }
+      if (COUPONS[code]) {
+        appliedCoupon = COUPONS[code];
+        msgEl.textContent = '✓ ' + appliedCoupon.label;
+        msgEl.className = 'coupon__msg success';
+        renderCart();
+        showToast(appliedCoupon.label);
+      } else {
+        appliedCoupon = null;
+        msgEl.textContent = 'Invalid coupon code.';
+        msgEl.className = 'coupon__msg error';
+        renderCart();
+      }
+    });
+
+    document.getElementById('coupon-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('coupon-btn').click();
+    });
+
+    /* ---- Shipping estimator ---- */
+    document.getElementById('shipping-btn').addEventListener('click', () => {
+      const country = document.getElementById('shipping-country').value;
+      const method = document.getElementById('shipping-method');
+      const zip = document.getElementById('shipping-zip').value.trim();
+      const resultEl = document.getElementById('shipping-result');
+
+      if (!country || !method.value || !zip) {
+        showToast('Please fill in all shipping fields.', true);
+        return;
+      }
+
+      const selected = method.options[method.selectedIndex];
+      const price = parseFloat(selected.dataset.price);
+      const label = selected.text.split('—')[0].trim();
+
+      shippingCost = price;
+      document.getElementById('shipping-result-label').textContent = label;
+      document.getElementById('shipping-result-price').textContent = price === 0 ? 'FREE' : `$${price.toFixed(2)}`;
+      resultEl.classList.add('show-result');
+      renderCart();
+      showToast('Shipping calculated!');
+    });
+
+    /* ---- Checkout ---- */
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      const cart = getCart();
+      if (cart.length === 0) return;
+      showToast('Redirecting to checkout…');
+      setTimeout(() => {
+        /* Replace with your checkout URL */
+        alert('Checkout page not yet implemented. Redirecting would happen here.');
+      }, 1500);
+    });
+
+    /* ---- Demo products (only added once, for testing) ---- */
+    function seedDemoProducts() {
+      if (localStorage.getItem('cart-seeded')) return;
+      const demos = [
+        {
+          id: 'colorful-pattern-shirts-1',
+          name: 'Colorful Pattern Shirts',
+          category: 'Clothing',
+          price: 238.85,
+          image: 'C:/Users/danud/OneDrive/Рабочий стол/code/img/product-1-1.jpg',
+          qty: 1
+        },
+        {
+          id: 'leather-shoulder-bag',
+          name: 'Leather Shoulder Bag',
+          category: 'Bags',
+          price: 149.00,
+          image: 'C:/Users/danud/OneDrive/Рабочий стол/code/img/product-3-1.jpg',
+          qty: 2
+        },
+        {
+          id: 'classic-running-shoes',
+          name: 'Classic Running Shoes',
+          category: 'Shoes',
+          price: 89.99,
+          image: 'C:/Users/danud/OneDrive/Рабочий стол/code/img/product-4-1.jpg',
+          qty: 1
+        }
+      ];
+      localStorage.setItem(CART_KEY, JSON.stringify(demos));
+      localStorage.setItem('cart-seeded', '1');
+    }
+
+    /* ---- Init ---- */
+    seedDemoProducts();
+    renderCart();
+  </script>
+
+  <!--=============== MAIN JS ===============-->
+  <script src="C:/Users/danud/OneDrive/Рабочий стол/code/js/main.js"></script>
+</body>
+
+</html>

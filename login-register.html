@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="C:/Users/danud/OneDrive/Рабочий стол/code/css/styles.css" />
+  <title>Login & Register - Ecommerce Website</title>
+</head>
+
+<body>
+
+  <!--=============== HEADER ===============-->
+  <header class="header">
+    <div class="header__top">
+      <div class="header__container container">
+        <div class="header__contact">
+          <span>(+373) - 6874 - 6543</span>
+          <span>Our location</span>
+        </div>
+        <p class="header__alert-news">Super Value Deals - Save more with coupons</p>
+        <a href="login-register.html" class="header__top-action">Log In / Sign Up</a>
+      </div>
+    </div>
+
+    <nav class="nav container">
+      <a href="index.html" class="nav__logo">
+        <img src="img/logo.svg" alt="" class="nav__logo-img">
+      </a>
+      <div class="nav__menu" id="nav-menu">
+        <ul class="nav__list">
+          <li class="nav__item"><a href="index.html" class="nav__link">Home</a></li>
+          <li class="nav__item"><a href="shop.html" class="nav__link">Shop</a></li>
+          <li class="nav__item"><a href="wishlist.html" class="nav__link">Wishlist</a></li>
+          <li class="nav__item"><a href="carts.html" class="nav__link">Carts</a></li>
+          <li class="nav__item"><a href="login-register.html" class="nav__link active-link">Login</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!--=============== MAIN ===============-->
+  <main class="main">
+
+    <!--=============== LOGIN & REGISTER ===============-->
+    <section class="login__register section container">
+
+      <!-- Tab Buttons -->
+      <div class="auth__tabs">
+        <button class="auth__tab active-auth-tab" data-auth="login">Sign In</button>
+        <button class="auth__tab" data-auth="register">Create Account</button>
+      </div>
+
+      <div class="auth__container">
+
+        <!-- ===== LOGIN FORM ===== -->
+        <div class="auth__form active-auth-form" id="login-form">
+          <div class="auth__header">
+            <h2 class="auth__title">Welcome Back!</h2>
+            <p class="auth__subtitle">Sign in to your account to continue shopping</p>
+          </div>
+
+          <div class="auth__body">
+            <div class="form__group">
+              <label for="login-email" class="form__label">Email Address</label>
+              <div class="form__input-wrapper">
+                <i class="fi fi-rr-envelope form__icon"></i>
+                <input type="email" id="login-email" class="form__input form__input--auth"
+                  placeholder="Enter your email" autocomplete="email">
+              </div>
+              <span class="form__error" id="login-email-error"></span>
+            </div>
+
+            <div class="form__group">
+              <label for="login-password" class="form__label">Password</label>
+              <div class="form__input-wrapper">
+                <i class="fi fi-rr-lock form__icon"></i>
+                <input type="password" id="login-password" class="form__input form__input--auth"
+                  placeholder="Enter your password" autocomplete="current-password">
+                <button class="form__toggle-pass" id="toggle-login-pass" type="button" aria-label="Show password">
+                  <i class="fi fi-rr-eye"></i>
+                </button>
+              </div>
+              <span class="form__error" id="login-password-error"></span>
+            </div>
+
+            <div class="form__options">
+              <label class="form__checkbox-label">
+                <input type="checkbox" class="form__checkbox" id="remember-me">
+                <span class="form__checkmark"></span>
+                Remember me
+              </label>
+              <a href="#" class="form__forgot">Forgot password?</a>
+            </div>
+
+            <button class="btn btn--full" id="login-btn" type="button">Sign In</button>
+
+            <p class="auth__switch-text">
+              Don't have an account?
+              <button class="auth__switch-btn" data-auth="register" type="button">Create one</button>
+            </p>
+          </div>
+        </div>
+
+        <!-- ===== REGISTER FORM ===== -->
+        <div class="auth__form" id="register-form">
+          <div class="auth__header">
+            <h2 class="auth__title">Create Account</h2>
+            <p class="auth__subtitle">Join us and start shopping today</p>
+          </div>
+
+          <div class="auth__body">
+            <div class="form__row">
+              <div class="form__group">
+                <label for="reg-firstname" class="form__label">First Name</label>
+                <div class="form__input-wrapper">
+                  <i class="fi fi-rr-user form__icon"></i>
+                  <input type="text" id="reg-firstname" class="form__input form__input--auth" placeholder="First name"
+                    autocomplete="given-name">
+                </div>
+                <span class="form__error" id="reg-firstname-error"></span>
+              </div>
+              <div class="form__group">
+                <label for="reg-lastname" class="form__label">Last Name</label>
+                <div class="form__input-wrapper">
+                  <i class="fi fi-rr-user form__icon"></i>
+                  <input type="text" id="reg-lastname" class="form__input form__input--auth" placeholder="Last name"
+                    autocomplete="family-name">
+                </div>
+                <span class="form__error" id="reg-lastname-error"></span>
+              </div>
+            </div>
+
+            <div class="form__group">
+              <label for="reg-email" class="form__label">Email Address</label>
+              <div class="form__input-wrapper">
+                <i class="fi fi-rr-envelope form__icon"></i>
+                <input type="email" id="reg-email" class="form__input form__input--auth" placeholder="Enter your email"
+                  autocomplete="email">
+              </div>
+              <span class="form__error" id="reg-email-error"></span>
+            </div>
+
+            <div class="form__group">
+              <label for="reg-password" class="form__label">Password</label>
+              <div class="form__input-wrapper">
+                <i class="fi fi-rr-lock form__icon"></i>
+                <input type="password" id="reg-password" class="form__input form__input--auth"
+                  placeholder="Create a password" autocomplete="new-password">
+                <button class="form__toggle-pass" id="toggle-reg-pass" type="button" aria-label="Show password">
+                  <i class="fi fi-rr-eye"></i>
+                </button>
+              </div>
+              <span class="form__error" id="reg-password-error"></span>
+              <!-- Password strength indicator -->
+              <div class="password__strength" id="password-strength">
+                <div class="strength__bar">
+                  <span class="strength__fill" id="strength-fill"></span>
+                </div>
+                <span class="strength__label" id="strength-label"></span>
+              </div>
+            </div>
+
+            <div class="form__group">
+              <label for="reg-confirm-password" class="form__label">Confirm Password</label>
+              <div class="form__input-wrapper">
+                <i class="fi fi-rr-lock form__icon"></i>
+                <input type="password" id="reg-confirm-password" class="form__input form__input--auth"
+                  placeholder="Repeat your password" autocomplete="new-password">
+                <button class="form__toggle-pass" id="toggle-reg-confirm-pass" type="button" aria-label="Show password">
+                  <i class="fi fi-rr-eye"></i>
+                </button>
+              </div>
+              <span class="form__error" id="reg-confirm-error"></span>
+            </div>
+
+            <div class="form__options">
+              <label class="form__checkbox-label">
+                <input type="checkbox" class="form__checkbox" id="agree-terms">
+                <span class="form__checkmark"></span>
+                I agree to the <a href="#" class="form__link">Terms & Conditions</a>
+              </label>
+            </div>
+            <span class="form__error" id="reg-terms-error"></span>
+
+            <button class="btn btn--full" id="register-btn" type="button">Create Account</button>
+
+            <p class="auth__switch-text">
+              Already have an account?
+              <button class="auth__switch-btn" data-auth="login" type="button">Sign in</button>
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Success Toast Notification -->
+      <div class="auth__toast" id="auth-toast">
+        <i class="fi fi-rr-check-circle auth__toast-icon"></i>
+        <span class="auth__toast-msg" id="toast-msg">Welcome back!</span>
+      </div>
+
+    </section>
+  </main>
+
+  <!--=============== FOOTER ===============-->
+  <footer class="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+  <script src="C:\Users\danud\OneDrive\Рабочий стол\code\js\main.js"></script>
+
+  <script>
+    /* ============================================================
+       CONFIG
+    ============================================================ */
+    const API = 'http://localhost:3000';
+
+    /* ============================================================
+       TAB SWITCHING (Sign In ↔ Create Account)
+    ============================================================ */
+    document.querySelectorAll('[data-auth]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.auth;
+        document.querySelectorAll('.auth__tab').forEach(t => t.classList.remove('active-auth-tab'));
+        document.querySelectorAll('.auth__form').forEach(f => f.classList.remove('active-auth-form'));
+
+        const tabBtn = document.querySelector(`.auth__tab[data-auth="${target}"]`);
+        if (tabBtn) tabBtn.classList.add('active-auth-tab');
+        document.getElementById(`${target}-form`).classList.add('active-auth-form');
+        clearErrors();
+      });
+    });
+
+    /* ============================================================
+       SHOW/HIDE PASSWORD
+    ============================================================ */
+    ['toggle-login-pass', 'toggle-reg-pass', 'toggle-reg-confirm-pass'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const inp = btn.previousElementSibling;
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+        btn.querySelector('i').className = inp.type === 'password' ? 'fi fi-rr-eye' : 'fi fi-rr-eye-crossed';
+      });
+    });
+
+    /* ============================================================
+       TOAST
+    ============================================================ */
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('auth-toast');
+      const msgEl = document.getElementById('toast-msg');
+      msgEl.textContent = msg;
+      toast.style.background = isError ? '#fef2f2' : '';
+      toast.style.color      = isError ? '#dc2626' : '';
+      toast.style.borderColor= isError ? '#fca5a5' : '';
+      toast.classList.add('show-toast');
+      setTimeout(() => toast.classList.remove('show-toast'), 4000);
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('.form__error').forEach(el => el.textContent = '');
+    }
+
+    function setError(id, msg) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = msg;
+    }
+
+    /* ============================================================
+       REGISTER
+    ============================================================ */
+    document.getElementById('register-btn').addEventListener('click', async () => {
+      clearErrors();
+      const firstName = document.getElementById('reg-firstname').value.trim();
+      const lastName  = document.getElementById('reg-lastname').value.trim();
+      const email     = document.getElementById('reg-email').value.trim();
+      const password  = document.getElementById('reg-password').value;
+      const confirm   = document.getElementById('reg-confirm-password').value;
+      const terms     = document.getElementById('agree-terms').checked;
+
+      /* Validare frontend */
+      let valid = true;
+      if (!firstName) { setError('reg-firstname-error', 'First name is required.'); valid = false; }
+      if (!lastName)  { setError('reg-lastname-error',  'Last name is required.');  valid = false; }
+      if (!email)     { setError('reg-email-error',     'Email is required.');       valid = false; }
+      if (password.length < 6) { setError('reg-password-error', 'Min. 6 characters.'); valid = false; }
+      if (password !== confirm) { setError('reg-confirm-error', 'Passwords do not match.'); valid = false; }
+      if (!terms)     { setError('reg-terms-error', 'You must accept the terms.'); valid = false; }
+      if (!valid) return;
+
+      const btn = document.getElementById('register-btn');
+      btn.textContent = 'Se înregistrează...';
+      btn.disabled = true;
+
+      try {
+        const res  = await fetch(`${API}/register`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ firstName, lastName, email, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showToast('✅ Cont creat! Te poți autentifica acum.');
+          /* Golește formularul */
+          ['reg-firstname','reg-lastname','reg-email','reg-password','reg-confirm-password']
+            .forEach(id => document.getElementById(id).value = '');
+          document.getElementById('agree-terms').checked = false;
+          /* Trece automat la tab-ul Login */
+          setTimeout(() => {
+            document.querySelector('[data-auth="login"]').click();
+          }, 1500);
+        } else {
+          setError('reg-email-error', data.message);
+          showToast(data.message, true);
+        }
+      } catch (err) {
+        showToast('❌ Serverul nu răspunde. Pornește server.js!', true);
+      } finally {
+        btn.textContent = 'Create Account';
+        btn.disabled = false;
+      }
+    });
+
+    /* ============================================================
+       LOGIN
+    ============================================================ */
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      clearErrors();
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      let valid = true;
+      if (!email)    { setError('login-email-error',    'Email is required.');    valid = false; }
+      if (!password) { setError('login-password-error', 'Password is required.'); valid = false; }
+      if (!valid) return;
+
+      const btn = document.getElementById('login-btn');
+      btn.textContent = 'Se autentifică...';
+      btn.disabled = true;
+
+      try {
+        const res  = await fetch(`${API}/login`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          /* Salvează sesiunea în localStorage */
+          localStorage.setItem('currentUser', JSON.stringify(data.user));
+          showToast(`✅ ${data.message}`);
+          setTimeout(() => window.location.href = 'index.html', 1500);
+        } else {
+          setError('login-password-error', data.message);
+          showToast(data.message, true);
+        }
+      } catch (err) {
+        showToast('❌ Serverul nu răspunde. Pornește server.js!', true);
+      } finally {
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>

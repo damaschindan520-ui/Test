@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager – Demo JS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===================== RESET & BASE ===================== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #273549;
+      --border: #334155;
+      --accent: #38bdf8;
+      --accent2: #818cf8;
+      --success: #34d399;
+      --danger: #f87171;
+      --warn: #fbbf24;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ===================== LAYOUT ===================== */
+    .page {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin-top: .5rem;
+      font-size: .95rem;
+    }
+
+    /* ===================== CONCEPTS BADGE BAR ===================== */
+    .concepts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .3rem .85rem;
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* ===================== CARD ===================== */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card__title {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .card__title span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    /* ===================== FORM ===================== */
+    .task-form {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .task-form input[type="text"] {
+      flex: 1;
+      min-width: 180px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .65rem 1rem;
+      color: var(--text);
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .task-form input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    .task-form select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .65rem .75rem;
+      color: var(--text);
+      font-size: .85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* ===================== BUTTONS ===================== */
+    .btn {
+      padding: .65rem 1.25rem;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0f172a;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      padding: .4rem .75rem;
+      font-size: .8rem;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: .4rem .75rem;
+      font-size: .8rem;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── PRESSED effect (classList.add/remove) ── */
+    .btn.pressed {
+      transform: scale(.95);
+      filter: brightness(.8);
+    }
+
+    /* ===================== FILTER BAR ===================== */
+    .filter-bar {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .filter-bar .btn {
+      padding: .35rem .9rem;
+      font-size: .8rem;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .filter-bar .btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0f172a;
+    }
+
+    /* ===================== STATS ===================== */
+    .stats-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .stat-box {
+      flex: 1;
+      min-width: 80px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      text-align: center;
+    }
+
+    .stat-box .num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-box .lbl {
+      font-size: .7rem;
+      color: var(--muted);
+      margin-top: .2rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .stat-box.total .num {
+      color: var(--accent);
+    }
+
+    .stat-box.done .num {
+      color: var(--success);
+    }
+
+    .stat-box.pend .num {
+      color: var(--warn);
+    }
+
+    /* ===================== TASK LIST ===================== */
+    #task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .task-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .85rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      /* ANIMATION: slide-in when added */
+      animation: slideIn .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px) scale(.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    /* ANIMATION: shake on duplicate */
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-8px);
+      }
+
+      40% {
+        transform: translateX(8px);
+      }
+
+      60% {
+        transform: translateX(-5px);
+      }
+
+      80% {
+        transform: translateX(5px);
+      }
+    }
+
+    .task-item.shake {
+      animation: shake .4s;
+    }
+
+    /* ── COMPLETED state (classList.toggle) ── */
+    .task-item.completed {
+      opacity: .55;
+      border-color: transparent;
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    /* ANIMATION: fade-out when removed */
+    .task-item.removing {
+      animation: fadeOut .3s forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(.95) translateX(20px);
+        max-height: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+    }
+
+    .task-check {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      background: transparent;
+    }
+
+    .task-item.completed .task-check {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .task-check::after {
+      content: '✓';
+      font-size: .8rem;
+      color: #fff;
+      display: none;
+      font-weight: 700;
+    }
+
+    .task-item.completed .task-check::after {
+      display: block;
+    }
+
+    .task-text {
+      flex: 1;
+      font-size: .9rem;
+    }
+
+    .priority-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .priority-dot.low {
+      background: var(--success);
+    }
+
+    .priority-dot.medium {
+      background: var(--warn);
+    }
+
+    .priority-dot.high {
+      background: var(--danger);
+    }
+
+    .tag {
+      font-size: .68rem;
+      font-weight: 700;
+      padding: .18rem .55rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .tag.low {
+      background: #064e3b22;
+      color: var(--success);
+      border: 1px solid #065f4633;
+    }
+
+    .tag.medium {
+      background: #78350f22;
+      color: var(--warn);
+      border: 1px solid #92400e33;
+    }
+
+    .tag.high {
+      background: #7f1d1d22;
+      color: var(--danger);
+      border: 1px solid #991b1b33;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: .4rem;
+    }
+
+    /* ===================== EMPTY STATE ===================== */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      display: none;
+    }
+
+    .empty-state.visible {
+      display: block;
+    }
+
+    .empty-state .emoji {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: .75rem;
+    }
+
+    /* ===================== TOAST ===================== */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .85rem 1.25rem;
+      font-size: .85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      box-shadow: 0 8px 32px #0008;
+      transform: translateY(120px);
+      opacity: 0;
+      transition: all .4s cubic-bezier(.34, 1.56, .64, 1);
+      z-index: 999;
+      max-width: 320px;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #toast.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    #toast.info {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    #toast.error {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* ===================== CODE HIGHLIGHT BOX ===================== */
+    .code-box {
+      background: #0a0f1e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-family: 'Courier New', monospace;
+      font-size: .8rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-top: .75rem;
+    }
+
+    .code-box .kw {
+      color: #c084fc;
+    }
+
+    /* keyword */
+    .code-box .fn {
+      color: #38bdf8;
+    }
+
+    /* function */
+    .code-box .str {
+      color: #34d399;
+    }
+
+    /* string */
+    .code-box .cmt {
+      color: #475569;
+    }
+
+    /* comment */
+    .code-box .num {
+      color: #fbbf24;
+    }
+
+    /* number */
+
+    /* ===================== PROGRESS BAR ===================== */
+    .progress-wrap {
+      margin-top: .75rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: .4rem;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: var(--card);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .5s cubic-bezier(.4, 0, .2, 1);
+      width: 0%;
+    }
+
+    /* ===================== FORM SAVE DEMO ===================== */
+    .form-demo label {
+      display: block;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: .35rem;
+      font-weight: 600;
+    }
+
+    .form-demo input,
+    .form-demo textarea {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .6rem .85rem;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .85rem;
+      outline: none;
+      transition: border-color .2s;
+      resize: none;
+      margin-bottom: .85rem;
+    }
+
+    .form-demo input:focus,
+    .form-demo textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .autosave-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: #064e3b33;
+      color: var(--success);
+      border: 1px solid #065f4644;
+      border-radius: 999px;
+      padding: .25rem .75rem;
+      font-size: .72rem;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .autosave-badge.show {
+      opacity: 1;
+    }
+
+    .autosave-badge::before {
+      content: '✓';
+    }
+
+    /* ===================== CLEAR STORAGE BTN ===================== */
+    .danger-zone {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .85rem 1rem;
+      background: #7f1d1d11;
+      border: 1px solid #991b1b33;
+      border-radius: 8px;
+      margin-top: .75rem;
+    }
+
+    .danger-zone span {
+      flex: 1;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 500px) {
+      .hero h1 {
+        font-size: 1.5rem;
+      }
+
+      .task-form {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- ===== HERO ===== -->
+    <div class="hero">
+      <h1>🗂️ Task Manager</h1>
+      <p>Demonstrație interactivă: <strong>localStorage</strong> · <strong>JSON</strong> · <strong>classList</strong> ·
+        <strong>Animații CSS</strong></p>
+    </div>
+
+    <div class="concepts">
+      <span class="badge">localStorage.setItem / getItem</span>
+      <span class="badge">JSON.stringify / JSON.parse</span>
+      <span class="badge">classList.add / remove / toggle</span>
+      <span class="badge">CSS Animations</span>
+      <span class="badge">Auto-save</span>
+    </div>
+
+    <!-- ===== SECTION 1: TASK MANAGER ===== -->
+    <div class="card">
+      <div class="card__title"><span class="dot"></span> Lista de Task-uri (salvată în localStorage)</div>
+
+      <!-- Form -->
+      <div class="task-form" style="margin-bottom:1rem;">
+        <input type="text" id="task-input" placeholder="Scrie un task nou..." maxlength="120" />
+        <select id="priority-select">
+          <option value="low">🟢 Low</option>
+          <option value="medium" selected>🟡 Medium</option>
+          <option value="high">🔴 High</option>
+        </select>
+        <button class="btn btn-primary" id="add-btn" onclick="addTask()">＋ Adaugă</button>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <button class="btn active" data-filter="all" onclick="setFilter(this,'all')">Toate</button>
+        <button class="btn" data-filter="active" onclick="setFilter(this,'active')">Active</button>
+        <button class="btn" data-filter="done" onclick="setFilter(this,'done')">Completate</button>
+        <button class="btn" data-filter="high" onclick="setFilter(this,'high')">🔴 Urgente</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-box total">
+          <div class="num" id="stat-total">0</div>
+          <div class="lbl">Total</div>
+        </div>
+        <div class="stat-box done">
+          <div class="num" id="stat-done">0</div>
+          <div class="lbl">Done</div>
+        </div>
+        <div class="stat-box pend">
+          <div class="num" id="stat-pend">0</div>
+          <div class="lbl">Pending</div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Progres</span><span id="progress-pct">0%</span></div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- List -->
+      <ul id="task-list" style="margin-top:1rem;"></ul>
+      <div class="empty-state" id="empty-state">
+        <span class="emoji">📋</span>
+        Niciun task. Adaugă primul tău task!
+      </div>
+
+      <!-- Clear all -->
+      <div class="danger-zone">
+        <span>Șterge toate task-urile din localStorage</span>
+        <button class="btn btn-danger" onclick="clearAll()">🗑 Clear All</button>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 2: AUTO-SAVE FORM ===== -->
+    <div class="card">
+      <div class="card__title"><span class="dot" style="background:var(--accent2)"></span> Auto-Save Form (reîncarcă
+        pagina, datele rămân!)</div>
+      <div class="form-demo">
+        <label for="f-name">Nume</label>
+        <input type="text" id="f-name" placeholder="ex: Ion Popescu" oninput="autoSaveForm()" />
+        <label for="f-email">Email</label>
+        <input type="text" id="f-email" placeholder="ex: ion@email.com" oninput="autoSaveForm()" />
+        <label for="f-note">Notițe</label>
+        <textarea id="f-note" rows="3" placeholder="Scrie ceva..." oninput="autoSaveForm()"></textarea>
+        <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="clearForm()">✖ Șterge datele</button>
+          <span class="autosave-badge" id="autosave-badge"> Salvat automat!</span>
+        </div>
+      </div>
+
+      <!-- Code snippet -->
+      <div class="code-box">
+        <span class="cmt">// Salvare automată în localStorage</span>
+        <span class="kw">function</span> <span class="fn">autoSaveForm</span>() {
+        <span class="kw">const</span> data = {
+        name: document.<span class="fn">getElementById</span>(<span class="str">'f-name'</span>).value,
+        email: document.<span class="fn">getElementById</span>(<span class="str">'f-email'</span>).value,
+        note: document.<span class="fn">getElementById</span>(<span class="str">'f-note'</span>).value
+        };
+        localStorage.<span class="fn">setItem</span>(<span class="str">'formData'</span>, JSON.<span
+          class="fn">stringify</span>(data));
+        }
+
+        <span class="cmt">// Reîncărcare la refresh</span>
+        <span class="kw">const</span> saved = JSON.<span class="fn">parse</span>(localStorage.<span
+          class="fn">getItem</span>(<span class="str">'formData'</span>));
+        <span class="kw">if</span> (saved) { f-name.value = saved.name; ... }
+      </div>
+    </div>
+
+    <!-- ===== SECTION 3: CLASSLIST DEMO ===== -->
+    <div class="card">
+      <div class="card__title"><span class="dot" style="background:var(--warn)"></span> classList Demo</div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="demo-box-btn" onclick="demoAdd()">classList.add('activ')</button>
+        <button class="btn btn-outline" onclick="demoRemove()">classList.remove('activ')</button>
+        <button class="btn btn-outline" onclick="demoToggle()">classList.toggle('activ')</button>
+      </div>
+      <div id="demo-box"
+        style="margin-top:1rem;padding:1rem 1.25rem;border-radius:8px;border:2px dashed var(--border);text-align:center;font-weight:600;color:var(--muted);transition:all .3s;font-size:.9rem;">
+        Cutia mea 🎁 — apasă butoanele de mai sus
+      </div>
+      <div class="code-box" style="margin-top:.75rem;">
+        <span class="kw">const</span> box = document.<span class="fn">getElementById</span>(<span
+          class="str">'demo-box'</span>);
+        box.<span class="fn">classList</span>.<span class="fn">add</span>(<span class="str">'activ'</span>); <span
+          class="cmt">// adaugă clasa</span>
+        box.<span class="fn">classList</span>.<span class="fn">remove</span>(<span class="str">'activ'</span>); <span
+          class="cmt">// elimină clasa</span>
+        box.<span class="fn">classList</span>.<span class="fn">toggle</span>(<span class="str">'activ'</span>); <span
+          class="cmt">// adaugă dacă lipsește, elimină dacă există</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toast">💬 <span id="toast-msg"></span></div>
+
+  <style>
+    /* classList demo box active state */
+    #demo-box.activ {
+      background: linear-gradient(135deg, #0ea5e922, #818cf822);
+      border-color: var(--accent);
+      color: var(--accent);
+      animation: pulse .5s;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.04);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+
+  <script>
+    /* ============================================================
+       KEYS
+    ============================================================ */
+    const TASKS_KEY = 'tm_tasks';
+    const FORM_KEY = 'tm_form';
+
+    /* ============================================================
+       LOCALSTORAGE HELPERS
+       📌 Concepte: localStorage.setItem / getItem + JSON
+    ============================================================ */
+    function loadTasks() {
+      try { return JSON.parse(localStorage.getItem(TASKS_KEY)) || []; }
+      catch { return []; }
+    }
+    function saveTasks(tasks) {
+      localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+    }
+
+    /* ============================================================
+       STATE
+    ============================================================ */
+    let tasks = loadTasks();
+    let filter = 'all';
+
+    /* ============================================================
+       ADD TASK
+    ============================================================ */
+    function addTask() {
+      const input = document.getElementById('task-input');
+      const prio = document.getElementById('priority-select').value;
+      const text = input.value.trim();
+
+      /* 📌 Feedback vizual: buton apăsat */
+      const btn = document.getElementById('add-btn');
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 200);
+
+      if (!text) { showToast('⚠️ Scrie un task mai întâi!', 'error'); return; }
+
+      /* Verifică duplicate */
+      if (tasks.find(t => t.text.toLowerCase() === text.toLowerCase())) {
+        showToast('🔁 Task-ul există deja!', 'error');
+        /* 📌 classList – shake animație pe duplicat */
+        const dup = [...document.querySelectorAll('.task-item')]
+          .find(el => el.querySelector('.task-text').textContent.toLowerCase() === text.toLowerCase());
+        if (dup) { dup.classList.add('shake'); setTimeout(() => dup.classList.remove('shake'), 500); }
+        return;
+      }
+
+      const task = { id: Date.now(), text, priority: prio, done: false };
+      tasks.push(task);
+      saveTasks(tasks);    /* 📌 JSON.stringify → localStorage */
+      renderTasks();
+      input.value = '';
+      input.focus();
+      showToast('✅ Task adăugat!', 'success');
+    }
+
+    /* Enter key */
+    document.getElementById('task-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    /* ============================================================
+       TOGGLE DONE
+       📌 classList.toggle('completed')
+    ============================================================ */
+    function toggleDone(id) {
+      tasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+      saveTasks(tasks);
+      renderTasks();
+    }
+
+    /* ============================================================
+       DELETE TASK
+       📌 classList.add('removing') → animație → remove din DOM
+    ============================================================ */
+    function deleteTask(id) {
+      const li = document.querySelector(`[data-id="${id}"]`);
+      if (li) {
+        li.classList.add('removing');   /* 📌 addClass → animație CSS */
+        setTimeout(() => {
+          tasks = tasks.filter(t => t.id !== id);
+          saveTasks(tasks);
+          renderTasks();
+        }, 280);
+      }
+    }
+
+    /* ============================================================
+       CLEAR ALL
+    ============================================================ */
+    function clearAll() {
+      if (!tasks.length) { showToast('Lista e deja goală!', 'info'); return; }
+      if (!confirm('Ștergi toate task-urile?')) return;
+      tasks = [];
+      saveTasks(tasks);
+      renderTasks();
+      showToast('🗑 Toate task-urile șterse!', 'info');
+    }
+
+    /* ============================================================
+       FILTER
+       📌 classList.add/remove 'active' pe butoane
+    ============================================================ */
+    function setFilter(btn, f) {
+      document.querySelectorAll('.filter-bar .btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');   /* 📌 classList.add */
+      filter = f;
+      renderTasks();
+    }
+
+    /* ============================================================
+       RENDER
+    ============================================================ */
+    function renderTasks() {
+      const list = document.getElementById('task-list');
+      const empty = document.getElementById('empty-state');
+
+      /* Stats */
+      const total = tasks.length;
+      const done = tasks.filter(t => t.done).length;
+      const pend = total - done;
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-done').textContent = done;
+      document.getElementById('stat-pend').textContent = pend;
+
+      /* Progress bar */
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-pct').textContent = pct + '%';
+
+      /* Filtered list */
+      let visible = tasks;
+      if (filter === 'active') visible = tasks.filter(t => !t.done);
+      if (filter === 'done') visible = tasks.filter(t => t.done);
+      if (filter === 'high') visible = tasks.filter(t => t.priority === 'high' && !t.done);
+
+      /* Empty state */
+      if (visible.length === 0) {
+        empty.classList.add('visible');   /* 📌 classList.add */
+        list.innerHTML = '';
+        return;
+      }
+      empty.classList.remove('visible'); /* 📌 classList.remove */
+
+      list.innerHTML = visible.map(t => `
+      <li class="task-item ${t.done ? 'completed' : ''}" data-id="${t.id}">
+        <div class="task-check" onclick="toggleDone(${t.id})" title="Marchează ca done"></div>
+        <span class="priority-dot ${t.priority}"></span>
+        <span class="task-text">${escHtml(t.text)}</span>
+        <span class="tag ${t.priority}">${t.priority}</span>
+        <div class="task-actions">
+          <button class="btn btn-danger" onclick="deleteTask(${t.id})">✕</button>
+        </div>
+      </li>
+    `).join('');
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    /* ============================================================
+       AUTO-SAVE FORM
+       📌 localStorage.setItem + JSON.stringify on every keystroke
+    ============================================================ */
+    function autoSaveForm() {
+      const data = {
+        name: document.getElementById('f-name').value,
+        email: document.getElementById('f-email').value,
+        note: document.getElementById('f-note').value
+      };
+      localStorage.setItem(FORM_KEY, JSON.stringify(data));
+
+      /* Badge feedback */
+      const badge = document.getElementById('autosave-badge');
+      badge.classList.add('show');
+      clearTimeout(badge._t);
+      badge._t = setTimeout(() => badge.classList.remove('show'), 2000);
+    }
+
+    function loadForm() {
+      try {
+        const data = JSON.parse(localStorage.getItem(FORM_KEY));
+        if (!data) return;
+        document.getElementById('f-name').value = data.name || '';
+        document.getElementById('f-email').value = data.email || '';
+        document.getElementById('f-note').value = data.note || '';
+      } catch { }
+    }
+
+    function clearForm() {
+      localStorage.removeItem(FORM_KEY);
+      document.getElementById('f-name').value = '';
+      document.getElementById('f-email').value = '';
+      document.getElementById('f-note').value = '';
+      showToast('🗑 Date formular șterse din localStorage', 'info');
+    }
+
+    /* ============================================================
+       CLASSLIST DEMO
+    ============================================================ */
+    function demoAdd() { document.getElementById('demo-box').classList.add('activ'); showToast("classList.add('activ') ✓", 'info'); }
+    function demoRemove() { document.getElementById('demo-box').classList.remove('activ'); showToast("classList.remove('activ') ✓", 'info'); }
+    function demoToggle() {
+      document.getElementById('demo-box').classList.toggle('activ');
+      const has = document.getElementById('demo-box').classList.contains('activ');
+      showToast(`classList.toggle → clasa ${has ? 'adăugată ✓' : 'eliminată ✗'}`, 'info');
+    }
+
+    /* ============================================================
+       TOAST
+       📌 classList.add/remove 'show'
+    ============================================================ */
+    let toastTimer;
+    function showToast(msg, type = 'info') {
+      const t = document.getElementById('toast');
+      const m = document.getElementById('toast-msg');
+      m.textContent = msg;
+      t.className = `show ${type}`;    /* 📌 className = ... */
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    /* ============================================================
+       INIT – reîncarcă datele la refresh
+    ============================================================ */
+    renderTasks();
+    loadForm();
+  </script>
+</body>
+
+</html>
