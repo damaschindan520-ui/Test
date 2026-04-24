@@ -520,7 +520,7 @@
                   if (!nameEl || !priceEl) return;
                   const name = nameEl.textContent.trim();
                   addToCart({
-                    id: name.replace(/\s+/g, '-').toLowerCase(),
+                    id: (name + (imgEl ? imgEl.getAttribute('src') : '')).replace(/[^a-z0-9]/gi, '-').toLowerCase(),
                     name: name,
                     category: catEl ? catEl.textContent.trim() : '',
                     price: parseFloat(priceEl.textContent.replace('$', '')),
@@ -565,7 +565,7 @@
                   if (!nameEl || !priceEl) return;
                   const name = nameEl.textContent.trim();
                   const product = {
-                    id: name.replace(/\s+/g, '-').toLowerCase(),
+                    id: (name + (imgEl ? imgEl.getAttribute('src') : '')).replace(/[^a-z0-9]/gi, '-').toLowerCase(),
                     name, category: catEl ? catEl.textContent.trim() : '',
                     price: parseFloat(priceEl.textContent.replace('$', '')),
                     image: imgEl ? imgEl.src : ''

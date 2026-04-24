@@ -837,40 +837,6 @@
 
   <!--=============== CART JS ===============-->
   <script>
-    /*============================================================
-      CART SYSTEM — localStorage based
-      
-      Data structure in localStorage key "cart":
-      [
-        {
-          id: "product-1",
-          name: "Colorful Pattern Shirts",
-          category: "Clothing",
-          price: 238.85,
-          image: "img/product-1-1.jpg",
-          qty: 2
-        },
-        ...
-      ]
-      
-      How to add products from other pages:
-      Call addToCart({ id, name, category, price, image }) from any page.
-      Example (in main.js or on the product page):
-      
-        document.querySelectorAll('.cart__btn, .action__btn[aria-label="Carts"]').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const item = btn.closest('.product__item');
-            addToCart({
-              id: item.querySelector('.product__title').textContent.trim().replace(/\s+/g, '-').toLowerCase(),
-              name: item.querySelector('.product__title').textContent.trim(),
-              category: item.querySelector('.product__category').textContent.trim(),
-              price: parseFloat(item.querySelector('.new__price').textContent.replace('$', '')),
-              image: item.querySelector('.product__img.default').src
-            });
-          });
-        });
-    ============================================================*/
 
     /* ---- Helpers ---- */
     const CART_KEY = 'cart';
