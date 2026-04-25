@@ -308,6 +308,22 @@ if (registerBtn) {
 
     saveUser(newUser);
 
+    // Salvăm datele și pe server în users.json
+    fetch('http://localhost:3000/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newUser)
+    }).catch(err => console.error('Eroare la salvarea pe server:', err));
+
+    // Generăm și descărcăm fișierul cu datele contului
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(newUser, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `date_cont_${newUser.firstName}.json`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+
     registerBtn.textContent = 'Creating account...';
     registerBtn.disabled = true;
 
