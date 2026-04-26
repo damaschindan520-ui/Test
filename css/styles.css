@@ -1511,3 +1511,22 @@ input {
 @media screen and (max-width: 576px) {}
 
 @media screen and (max-width: 350px) {}
+
+/* Fix for duplicate swiper arrows */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  content: '' !important;
+  display: none !important;
+}
+
+/* Extra fix for duplicate arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  color: transparent !important;
+}
+
+.swiper-button-next i,
+.swiper-button-prev i {
+  color: var(--first-color) !important;
+  font-size: 1.5rem;
+}
