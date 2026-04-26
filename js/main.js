@@ -308,7 +308,6 @@ if (registerBtn) {
 
     saveUser(newUser);
 
-    // Salvăm datele și pe server în users.json
     fetch('http://localhost:3000/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
